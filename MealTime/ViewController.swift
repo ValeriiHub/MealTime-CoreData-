@@ -86,5 +86,20 @@ extension ViewController: UITableViewDataSource {
         cell.textLabel!.text = dateFormatter.string(from: mealDate)
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        
+        guard let meal = user.meals?[indexPath.row] as? Meal,
+              editingStyle == .delete else { return }
+        
+        contex.delete(meal)
+        
+        do {
+            try contex.save()
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+        } catch let error {
+            print(error.localizedDescription)
+        }
+    }
 }
 
